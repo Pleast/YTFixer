@@ -1,1 +1,22 @@
-# YTFixer
+# YouTube Fullscreen Stream with Live Chat
+
+I created this project because YouTube's interface is bloated and can cause lag and performance issues, especially when watching live streams. This project embeds YouTube streams without all the bloat, integrating YouTube chat for an easier and smoother viewing experience.
+
+## Features:
+- **Fullscreen Video Player**: Displays YouTube videos in fullscreen mode without any extra bloat.
+- **Live Chat Integration**: Toggles YouTube's live chat alongside the stream for a more interactive experience.
+- **Performance-Friendly**: A lightweight alternative to YouTube, reducing unnecessary resource consumption.
+- **Custom Sidebar**: A hidden sidebar that can be revealed when hovering over the hamburger menu, giving easy access to the chat toggle and (other controls s00n).
+- **Easy YouTube URL Input**: Just paste any YouTube link or video ID, and the player will load the stream.
+
+## How to Use:
+1. Visit the live version of the project at: [https://pleast.github.io/ytfixer](https://pleast.github.io/ytfixer).
+2. Paste a YouTube link or video ID in the input field, and click "Load Stream."
+3. Use the hamburger menu to toggle the sidebar and live chat.
+
+## Share the Stream:
+You can share the stream link with this domain to friends, and they can view the livestream with chat integration directly.
+
+## Customization:
+- The video player and chat iframe can be styled or modified further to fit your needs.
+- Supports direct links or embedded video IDs for YouTube content.
