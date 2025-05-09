@@ -13,6 +13,3 @@ I created this website because YouTube's interface is bloated and can cause lag 
 1. Visit the live version of the project at: [https://pleast.github.io/ytfixer](https://pleast.github.io/ytfixer).
 2. Paste a YouTube link or video ID in the input field, and click "Load Stream."
 3. Use the hamburger menu to toggle the sidebar and live chat.
-
-## Share the Stream:
-You can share the stream link with this domain to friends, and they can view the livestream with chat integration directly.
