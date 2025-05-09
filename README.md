@@ -1,6 +1,6 @@
-# YouTube Fullscreen Stream with Live Chat
+# YouTube Fullscreen Stream with Live Chat with spare ram!
 
-I created this project because YouTube's interface is bloated and can cause lag and performance issues, especially when watching live streams. This project embeds YouTube streams without all the bloat, integrating YouTube chat for an easier and smoother viewing experience.
+I created this website because YouTube's interface is bloated and can cause lag and performance issues, especially when watching live streams. This project embeds YouTube streams without all the bloat, integrating YouTube chat for an easier and smoother viewing experience.
 
 ## Features:
 - **Fullscreen Video Player**: Displays YouTube videos in fullscreen mode without any extra bloat.
@@ -16,7 +16,3 @@ I created this project because YouTube's interface is bloated and can cause lag 
 
 ## Share the Stream:
 You can share the stream link with this domain to friends, and they can view the livestream with chat integration directly.
-
-## Customization:
-- The video player and chat iframe can be styled or modified further to fit your needs.
-- Supports direct links or embedded video IDs for YouTube content.
