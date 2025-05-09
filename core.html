@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>YTFixer</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: #000;
+      font-family: 'Segoe UI', sans-serif;
+      overflow: hidden;
+    }
+
+    #streamPlayer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      transition: width 0.3s, height 0.3s;
+      z-index: 0;
+    }
+
+    .overlay {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 10;
+      display: flex;
+      gap: 12px;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 16px 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(6px);
+    }
+
+    input[type="text"] {
+      width: 400px;
+      padding: 14px 18px;
+      font-size: 18px;
+      border: none;
+      border-radius: 14px;
+      outline: none;
+      background-color: #1a1a1a;
+      color: #fff;
+      box-shadow: 0 0 5px rgba(255,255,255,0.1);
+    }
+
+    button {
+      padding: 14px 22px;
+      font-size: 18px;
+      background-color: #2c2c2c;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #444;
+      box-shadow: 0 0 8px rgba(255,255,255,0.2);
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .hamburger {
+      position: absolute;
+      top: 60px;
+      left: 20px;
+      width: 30px;
+      height: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      cursor: pointer;
+      z-index: 20;
+    }
+
+    .hamburger div {
+      width: 100%;
+      height: 4px;
+      background-color: white;
+      border-radius: 2px;
+    }
+
+    .sidebar-wrapper {
+      position: absolute;
+      top: 90px;
+      left: 0;
+      height: 100%;
+      width: 220px;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease;
+      background-color: rgba(20, 20, 20, 0.95);
+      z-index: 15;
+      padding: 60px 20px 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      color: white;
+    }
+
+    .hamburger:hover + .sidebar-wrapper,
+    .sidebar-wrapper:hover {
+      transform: translateX(0);
+    }
+
+    .sidebar-tab {
+      background-color: #2a2a2a;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .sidebar-tab:hover {
+      background-color: #444;
+    }
+
+    #chatBox {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 350px;
+      height: 100%;
+      background-color: #1a1a1a;
+      z-index: 1;
+      display: none;
+      border-left: 3px solid #444;
+      box-shadow: -2px 0 5px rgba(255, 255, 255, 0.2);
+    }
+
+    #chatBox iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .toggle-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      background-color: transparent;
+      cursor: pointer;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    .toggle-circle.on {
+      background-color: #2196F3;
+      border-color: #2196F3;
+    }
+
+    .toggle-circle.off {
+      background-color: transparent;
+      border-color: #fff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay" id="inputOverlay">
+    <input type="text" id="streamInput" placeholder="Paste YouTube link or video ID">
+    <button onclick="loadStream()">Load Stream</button>
+  </div>
+
+  <iframe id="streamPlayer"
+          src=""
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+  </iframe>
+
+  <div id="chatBox">
+    <iframe id="chatIframe" src="" allow="encrypted-media"></iframe>
+  </div>
+
+  <div class="menu-hover">
+    <div class="hamburger">
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+
+    <div class="sidebar-wrapper">
+      <div class="sidebar-tab">
+        <div id="chatToggleBtn" class="toggle-circle off" onclick="toggleChat()">
+        </div>
+        <span style="color: white; margin-left: 10px;">Chat</span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function getVideoIDFromURL() {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get('videoID');
+    }
+
+    function extractVideoID(url) {
+      const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#&?]*).*/;
+      const match = url.match(regExp);
+      return (match && match[1].length === 11) ? match[1] : url;
+    }
+
+    function loadStream() {
+      let input = document.getElementById('streamInput').value.trim();
+      const videoID = getVideoIDFromURL() || extractVideoID(input);
+      const player = document.getElementById('streamPlayer');
+      const overlay = document.getElementById('inputOverlay');
+
+      if (videoID) {
+        player.src = `https://www.youtube-nocookie.com/embed/${videoID}?autoplay=1&modestbranding=1&rel=0&showinfo=0&controls=1&fs=1`;
+        overlay.classList.add('hidden');
+      }
+    }
+
+    function toggleChat() {
+      const chatBox = document.getElementById('chatBox');
+      const chatToggleBtn = document.getElementById('chatToggleBtn');
+      const player = document.getElementById('streamPlayer');
+
+      if (chatBox.style.display === "none" || chatBox.style.display === "") {
+        chatBox.style.display = "block";
+        player.style.width = "calc(100% - 350px)";
+        const videoID = getVideoIDFromURL() || extractVideoID(document.getElementById('streamInput').value.trim());
+        document.getElementById('chatIframe').src = `https://www.youtube.com/live_chat?v=${videoID}&embed_domain=${window.location.hostname}`;
+
+        // Toggle chat button state to "on"
+        chatToggleBtn.classList.remove("off");
+        chatToggleBtn.classList.add("on");
+      } else {
+        chatBox.style.display = "none";
+        player.style.width = "100%";
+        document.getElementById('chatIframe').src = "";
+
+        chatToggleBtn.classList.remove("on");
+        chatToggleBtn.classList.add("off");
+      }
+    }
+
+    window.onload = () => {
+      const videoID = getVideoIDFromURL();
+      if (videoID) {
+        document.getElementById('streamInput').value = videoID;
+        loadStream();
+      } else {
+        document.getElementById('streamInput').focus();
+      }
+    };
+  </script>
+
+</body>
+</html>
