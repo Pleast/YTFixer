@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>YTFixer</title>
+  <title>BetterYT</title>
   <style>
     html, body {
       margin: 0;
@@ -71,9 +71,10 @@
       display: none;
     }
 
+    /* Hamburger Icon */
     .hamburger {
       position: absolute;
-      top: 60px;
+      top: 120px;
       left: 20px;
       width: 30px;
       height: 25px;
@@ -84,6 +85,10 @@
       z-index: 20;
     }
 
+    body.twitch-mode .hamburger {
+      top: 100px;
+    }
+
     .hamburger div {
       width: 100%;
       height: 4px;
@@ -92,22 +97,23 @@
     }
 
     .sidebar-wrapper {
-      position: absolute;
-      top: 90px;
-      left: 0;
-      height: 100%;
-      width: 220px;
-      transform: translateX(-100%);
-      transition: transform 0.3s ease;
-      background-color: rgba(20, 20, 20, 0.95);
-      z-index: 15;
-      padding: 60px 20px 20px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      color: white;
-    }
+    position: absolute;
+    top: 150px;
+    left: 0px;
+    height: auto;
+    width: 160px;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    background-color: rgba(20, 20, 20, 0.95);
+    z-index: 15;
+    padding: 20px 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    color: white;
+    border-radius: 12px;
+  }
 
     .hamburger:hover + .sidebar-wrapper,
     .sidebar-wrapper:hover {
@@ -115,16 +121,17 @@
     }
 
     .sidebar-tab {
-      background-color: #2a2a2a;
-      padding: 12px 16px;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: background-color 0.2s;
-    }
+    background-color: #2a2a2a;
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-top: 10px;
+  }
 
-    .sidebar-tab:hover {
-      background-color: #444;
-    }
+   .sidebar-tab:hover {
+    background-color: #444;
+  }
 
     #chatBox {
       position: absolute;
@@ -167,17 +174,12 @@
   </style>
 </head>
 <body>
-
   <div class="overlay" id="inputOverlay">
-    <input type="text" id="streamInput" placeholder="Paste YouTube link or video ID">
+    <input type="text" id="streamInput" placeholder="Paste YouTube/Twitch link or ID">
     <button onclick="loadStream()">Load Stream</button>
   </div>
 
-  <iframe id="streamPlayer"
-          src=""
-          allow="autoplay; encrypted-media"
-          allowfullscreen>
-  </iframe>
+  <iframe id="streamPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
 
   <div id="chatBox">
     <iframe id="chatIframe" src="" allow="encrypted-media"></iframe>
@@ -189,74 +191,79 @@
       <div></div>
       <div></div>
     </div>
-
     <div class="sidebar-wrapper">
       <div class="sidebar-tab">
-        <div id="chatToggleBtn" class="toggle-circle off" onclick="toggleChat()">
-        </div>
+        <div id="chatToggleBtn" class="toggle-circle off" onclick="toggleChat()"></div>
         <span style="color: white; margin-left: 10px;">Chat</span>
       </div>
     </div>
   </div>
 
   <script>
-    function getVideoIDFromURL() {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get('videoID');
-    }
-
     function extractVideoID(url) {
+      if (url.includes("twitch.tv")) {
+        const parts = url.split("/");
+        return parts[parts.length - 1];
+      }
       const regExp = /^.*(?:youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=)([^#&?]*).*/;
       const match = url.match(regExp);
       return (match && match[1].length === 11) ? match[1] : url;
     }
 
     function loadStream() {
-      let input = document.getElementById('streamInput').value.trim();
-      const videoID = getVideoIDFromURL() || extractVideoID(input);
-      const player = document.getElementById('streamPlayer');
-      const overlay = document.getElementById('inputOverlay');
+    const input = document.getElementById('streamInput').value.trim();
+    const videoId = extractVideoID(input);
+    const player = document.getElementById('streamPlayer');
+    const overlay = document.getElementById('inputOverlay');
+    const hamburger = document.querySelector('.hamburger');
 
-      if (videoID) {
-        player.src = `https://www.youtube-nocookie.com/embed/${videoID}?autoplay=1&modestbranding=1&rel=0&showinfo=0&controls=1&fs=1`;
-        overlay.classList.add('hidden');
-      }
+    if (input.includes("twitch.tv")) {
+      const twitchChannel = videoId;
+      player.src = `https://player.twitch.tv/?channel=${twitchChannel}&parent=${window.location.hostname}&autoplay=true`;
+      document.body.classList.add("twitch-mode");
+      document.body.classList.remove("youtube-mode");
+      hamburger.style.top = "150px";
+    } else {
+      player.src = `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&modestbranding=1&rel=0&showinfo=0&controls=1&fs=1`;
+      document.body.classList.add("youtube-mode");
+      document.body.classList.remove("twitch-mode");
+      hamburger.style.top = "120px";
     }
+
+    overlay.classList.add('hidden');
+  }
 
     function toggleChat() {
       const chatBox = document.getElementById('chatBox');
       const chatToggleBtn = document.getElementById('chatToggleBtn');
       const player = document.getElementById('streamPlayer');
+      const input = document.getElementById('streamInput').value.trim();
+
+      const isTwitch = input.includes("twitch.tv");
+      const id = extractVideoID(input);
 
       if (chatBox.style.display === "none" || chatBox.style.display === "") {
         chatBox.style.display = "block";
         player.style.width = "calc(100% - 350px)";
-        const videoID = getVideoIDFromURL() || extractVideoID(document.getElementById('streamInput').value.trim());
-        document.getElementById('chatIframe').src = `https://www.youtube.com/live_chat?v=${videoID}&embed_domain=${window.location.hostname}`;
-
-        // Toggle chat button state to "on"
+        if (isTwitch) {
+          document.getElementById('chatIframe').src = `https://www.twitch.tv/popout/${id}/chat?popout=`;
+        } else {
+          document.getElementById('chatIframe').src = `https://www.youtube.com/live_chat?v=${id}&embed_domain=${window.location.hostname}`;
+        }
         chatToggleBtn.classList.remove("off");
         chatToggleBtn.classList.add("on");
       } else {
         chatBox.style.display = "none";
         player.style.width = "100%";
         document.getElementById('chatIframe').src = "";
-
         chatToggleBtn.classList.remove("on");
         chatToggleBtn.classList.add("off");
       }
     }
 
     window.onload = () => {
-      const videoID = getVideoIDFromURL();
-      if (videoID) {
-        document.getElementById('streamInput').value = videoID;
-        loadStream();
-      } else {
-        document.getElementById('streamInput').focus();
-      }
+      document.getElementById('streamInput').focus();
     };
   </script>
-
 </body>
 </html>
