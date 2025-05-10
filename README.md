@@ -8,6 +8,7 @@ I created this website because YouTube's interface is bloated and can cause lag 
 - **Performance-Friendly**: A lightweight alternative to YouTube, reducing unnecessary resource consumption.
 - **Custom Sidebar**: A hidden sidebar that can be revealed when hovering over the hamburger menu, giving easy access to the chat toggle and (other controls s00n).
 - **Easy YouTube URL Input**: Just paste any YouTube link or video ID, and the player will load the stream.
+- **It Supports Twitch Too**: but twitch is already fine imo :3
 
 ## How to Use:
 1. Visit the live version of the project [HERE](https://pleast.github.io/YTFixer/).
