@@ -10,6 +10,6 @@ I created this website because YouTube's interface is bloated and can cause lag 
 - **Easy YouTube URL Input**: Just paste any YouTube link or video ID, and the player will load the stream.
 
 ## How to Use:
-1. Visit the live version of the project at: [https://pleast.github.io/ytfixer](https://pleast.github.io/YTFixer/).
+1. Visit the live version of the project [HERE](https://pleast.github.io/YTFixer/).
 2. Paste a YouTube link or video ID in the input field, and click "Load Stream."
 3. Use the hamburger menu to toggle the sidebar and live chat.
